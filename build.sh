@@ -246,4 +246,4 @@ case "$action" in
         printf 'Unknown action: %s\n' "$action"
         exit 2
         ;;
-:esac
+esac
