@@ -193,38 +193,57 @@ platforms ()
     printf 'linux/arm64 linux/amd64'
 }
 
+run_buildx ()
+{
+  
+    docker buildx build "$1" --platform $(platforms) "$@" \
+        $(tag_arguments) \
+        --build-arg pandoc_commit="${pandoc_commit}" \
+        --build-arg pandoc_version="${pandoc_version}" \
+        --build-arg without_crossref="${without_crossref}" \
+        --build-arg extra_packages="${extra_packages}"\
+        --build-arg base_image_version="${base_image_version}" \
+        --build-arg texlive_version="${texlive_version}" \
+        --build-arg lua_version="${lua_version}" \
+        --target "${target}"\
+        -f "${directory}/${stack}/Dockerfile"\
+        "${directory}"
+}
+
 case "$action" in
     (push)
-        for tag in $(tags); do
-            printf 'Pushing %s...\n' "$tag"
-            docker push "${tag}" ||
-                exit 5
-        done
+        #for tag in $(tags); do
+        #    printf 'Pushing %s...\n' "$tag"
+        #    docker push "${tag}" ||
+        #        exit 5
+        #done
+        #;;
+
+        run_buildx "--push"
         ;;
+
     (build)
         ## build images
         # The use of $(tag_arguments) is correct here
         # shellcheck disable=SC2046
-        for platform in $(platforms); do
 
-            printf 'Building image for %s platform ($(tag_arguments))' "$platform"
+        run_buildx
 
-            docker buildx build --load --platform $platform "$@" \
-                $(tag_arguments) \
-                --build-arg pandoc_commit="${pandoc_commit}" \
-                --build-arg pandoc_version="${pandoc_version}" \
-                --build-arg without_crossref="${without_crossref}" \
-                --build-arg extra_packages="${extra_packages}"\
-                --build-arg base_image_version="${base_image_version}" \
-                --build-arg texlive_version="${texlive_version}" \
-                --build-arg lua_version="${lua_version}" \
-                --target "${target}"\
-                -f "${directory}/${stack}/Dockerfile"\
-                "${directory}"
-        done
+        #docker buildx build --platform $(platforms) "$@" \
+        #    $(tag_arguments) \
+        #    --build-arg pandoc_commit="${pandoc_commit}" \
+        #    --build-arg pandoc_version="${pandoc_version}" \
+        #    --build-arg without_crossref="${without_crossref}" \
+        #    --build-arg extra_packages="${extra_packages}"\
+        #    --build-arg base_image_version="${base_image_version}" \
+        #    --build-arg texlive_version="${texlive_version}" \
+        #    --build-arg lua_version="${lua_version}" \
+        #    --target "${target}"\
+        #    -f "${directory}/${stack}/Dockerfile"\
+        #    "${directory}"
         ;;
     (*)
         printf 'Unknown action: %s\n' "$action"
         exit 2
         ;;
-esac
+:esac
