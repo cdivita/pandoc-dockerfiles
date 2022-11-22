@@ -190,7 +190,7 @@ tag_arguments ()
 
 platforms ()
 {
-    printf 'linux/arm64 linux/amd64'
+    printf 'linux/arm64,linux/amd64'
 }
 
 run_buildx ()
@@ -217,8 +217,8 @@ run_buildx ()
         --build-arg base_image_version="${base_image_version}" \
         --build-arg texlive_version="${texlive_version}" \
         --build-arg lua_version="${lua_version}" \
-        --target "${build_target}" \
-        -f "${directory}/${stack}/Dockerfile" \
+        --target "${build_target}"\
+        -f "${directory}/${stack}/Dockerfile"\
         "${directory}"
 }
 
