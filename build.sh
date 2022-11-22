@@ -208,6 +208,8 @@ case "$action" in
         # shellcheck disable=SC2046
         for platform in $(platforms); do
 
+            printf 'Building image for %s platform ($(tags))' "$platform"
+
             docker buildx build --load --platform $platform "$@" \
                 $(tag_arguments) \
                 --build-arg pandoc_commit="${pandoc_commit}" \
