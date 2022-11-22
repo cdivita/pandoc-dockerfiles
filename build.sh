@@ -198,7 +198,7 @@ run_buildx ()
     
     extra_args="$2"
 
-    if [ "$1" == "push" ]; then
+    if [ "$1" = "push" ]; then
         build_action="--push"
         build_target="${target}"
     else
