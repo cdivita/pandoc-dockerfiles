@@ -26,16 +26,6 @@ jobs:
       stacks: ${{ steps.config.outputs.stacks }}
       build: ${{ steps.config.outputs.build }}
     steps:
-      - name: Docker Setup QEMU
-        uses: docker/setup-qemu-action@v2.1.0
-        with:
-          # Platforms to install (e.g. arm64,riscv64,arm)
-          platforms: linux/amd64,linux/arm64
-      - name: Docker Setup Buildx
-        uses: docker/setup-buildx-action@v2.2.1
-        with:
-          # Fixed platforms for current node. If not empty, values take priority over the detected ones
-          platforms: linux/amd64,linux/arm64
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.after }}
@@ -109,6 +99,16 @@ jobs:
       STACK: ${{ matrix.stack }}
 
     steps:
+      - name: Docker Setup QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+        with:
+          # Platforms to install (e.g. arm64,riscv64,arm)
+          platforms: linux/amd64,linux/arm64
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v2.2.1
+        with:
+          # Fixed platforms for current node. If not empty, values take priority over the detected ones
+          platforms: linux/amd64,linux/arm64
       - uses: actions/checkout@v2
 
       - name: Show config
