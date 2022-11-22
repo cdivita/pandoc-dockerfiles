@@ -207,7 +207,7 @@ run_buildx ()
         #build_target="${target}-test"
     fi
 
-    docker buildx build "${build_action}" "${extra_args}" \
+    `echo docker buildx build "${build_action}" "${extra_args}" \
         $(tag_arguments) \
         --platform "$(platforms)" \
         --build-arg pandoc_commit="${pandoc_commit}" \
@@ -219,7 +219,7 @@ run_buildx ()
         --build-arg lua_version="${lua_version}" \
         --target "${build_target}"\
         -f "${directory}/${stack}/Dockerfile"\
-        "${directory}"
+        "${directory}"`
 }
 
 case "$action" in
