@@ -200,7 +200,7 @@ case "$action" in
         ## build images
         # The use of $(tag_arguments) is correct here
         # shellcheck disable=SC2046
-        docker build "$@" \
+        docker buildx build --load --platform linux/amd64,linux/arm64 "$@" \
                $(tag_arguments) \
                --build-arg pandoc_commit="${pandoc_commit}" \
                --build-arg pandoc_version="${pandoc_version}" \
