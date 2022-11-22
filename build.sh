@@ -190,8 +190,7 @@ tag_arguments ()
 
 platforms ()
 {
-    printf 'linux/arm64'
-    printf 'linux/amd64'
+    printf 'linux/arm64 linux/amd64'
 }
 
 case "$action" in
@@ -208,7 +207,7 @@ case "$action" in
         # shellcheck disable=SC2046
         for platform in $(platforms); do
 
-            printf 'Building image for %s platform ($(tags))' "$platform"
+            printf 'Building image for %s platform ($(tag_arguments))' "$platform"
 
             docker buildx build --load --platform $platform "$@" \
                 $(tag_arguments) \
