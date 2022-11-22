@@ -195,9 +195,22 @@ platforms ()
 
 run_buildx ()
 {
-  
-    docker buildx build "$1" --platform $(platforms) "$@" \
+    
+    extra_args="$2"
+
+    if [ "$1" == "push" ]; then
+        build_action="--push"
+        build_target="${target}"
+    else
+        build_action=""
+        build_target="${target}"
+        #build_target="${target}-test"
+    fi
+ 
+
+    docker buildx build "${build_action}" "${extra_args}" \
         $(tag_arguments) \
+        --platform "$(platforms)"
         --build-arg pandoc_commit="${pandoc_commit}" \
         --build-arg pandoc_version="${pandoc_version}" \
         --build-arg without_crossref="${without_crossref}" \
@@ -205,7 +218,7 @@ run_buildx ()
         --build-arg base_image_version="${base_image_version}" \
         --build-arg texlive_version="${texlive_version}" \
         --build-arg lua_version="${lua_version}" \
-        --target "${target}"\
+        --target "${build_target}"\
         -f "${directory}/${stack}/Dockerfile"\
         "${directory}"
 }
@@ -219,7 +232,7 @@ case "$action" in
         #done
         #;;
 
-        run_buildx "--push"
+        run_buildx "push" "$@"
         ;;
 
     (build)
@@ -227,7 +240,7 @@ case "$action" in
         # The use of $(tag_arguments) is correct here
         # shellcheck disable=SC2046
 
-        run_buildx
+        run_buildx "build" "$@"
 
         #docker buildx build --platform $(platforms) "$@" \
         #    $(tag_arguments) \
