@@ -188,6 +188,12 @@ tag_arguments ()
     done
 }
 
+platforms ()
+{
+    printf 'linux/arm64'
+    printf 'linux/amd64'
+}
+
 case "$action" in
     (push)
         for tag in $(tags); do
@@ -200,7 +206,7 @@ case "$action" in
         ## build images
         # The use of $(tag_arguments) is correct here
         # shellcheck disable=SC2046
-        for platform in (linux/arm64, linux/amd64); do
+        for platform in $(platforms); do
 
             docker buildx build --load --platform $platform "$@" \
                 $(tag_arguments) \
