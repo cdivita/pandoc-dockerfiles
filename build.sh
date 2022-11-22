@@ -200,18 +200,21 @@ case "$action" in
         ## build images
         # The use of $(tag_arguments) is correct here
         # shellcheck disable=SC2046
-        docker buildx build --load --platform linux/amd64,linux/arm64 "$@" \
-               $(tag_arguments) \
-               --build-arg pandoc_commit="${pandoc_commit}" \
-               --build-arg pandoc_version="${pandoc_version}" \
-               --build-arg without_crossref="${without_crossref}" \
-               --build-arg extra_packages="${extra_packages}"\
-               --build-arg base_image_version="${base_image_version}" \
-               --build-arg texlive_version="${texlive_version}" \
-               --build-arg lua_version="${lua_version}" \
-               --target "${target}"\
-               -f "${directory}/${stack}/Dockerfile"\
-               "${directory}"
+        for platform in (linux/arm64, linux/amd64); do
+
+            docker buildx build --load --platform $platform "$@" \
+                $(tag_arguments) \
+                --build-arg pandoc_commit="${pandoc_commit}" \
+                --build-arg pandoc_version="${pandoc_version}" \
+                --build-arg without_crossref="${without_crossref}" \
+                --build-arg extra_packages="${extra_packages}"\
+                --build-arg base_image_version="${base_image_version}" \
+                --build-arg texlive_version="${texlive_version}" \
+                --build-arg lua_version="${lua_version}" \
+                --target "${target}"\
+                -f "${directory}/${stack}/Dockerfile"\
+                "${directory}"
+        done
         ;;
     (*)
         printf 'Unknown action: %s\n' "$action"
