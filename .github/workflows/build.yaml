@@ -17,7 +17,6 @@ on:
     # Build, but don't push on pull requests
   schedule:
     - cron: '33 6 * * 1,4'
-
 jobs:
   configure:
     name: Configure
@@ -27,6 +26,16 @@ jobs:
       stacks: ${{ steps.config.outputs.stacks }}
       build: ${{ steps.config.outputs.build }}
     steps:
+      - name: Docker Setup QEMU
+        uses: docker/setup-qemu-action@v2.1.0
+        with:
+          # Platforms to install (e.g. arm64,riscv64,arm)
+          platforms: 'amd64,arm64'
+      - name: Docker Setup Buildx
+        uses: docker/setup-buildx-action@v2.2.1
+        with:
+          # Fixed platforms for current node. If not empty, values take priority over the detected ones
+          platforms: amd64, arm64
       - uses: actions/checkout@v2
         with:
           ref: ${{ github.event.after }}
