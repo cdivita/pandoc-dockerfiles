@@ -139,10 +139,11 @@ extra_packages=pandoc-crossref
 without_crossref=
 
 # Do not build pandoc-crossref for static images or arm64 platforms (due to build issues)
-if [ "${stack}" = "static" ] || grep -q "arm64" <<< "$(platforms)"; then
+if [ "${stack}" = "static" ] || echo "$(platforms)" | grep -q "arm64"; then
     extra_packages=
     without_crossref=true
 fi
+
 
 # Debug output
 if [ "$verbosity" -gt 0 ]; then
