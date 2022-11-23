@@ -68,6 +68,16 @@ while true; do
     esac
 done
 
+# The list of supported platforms for Docker image build
+platforms ()
+{
+    if [ "${stack}" = "ubuntu" ]; then
+        printf 'linux/amd64,linux/arm64'
+    else
+        printf 'linux/amd64'
+    fi
+}
+
 ### Actions
 action=${1}
 shift
@@ -128,8 +138,8 @@ lua_version=$(version_table_field 7)
 extra_packages=pandoc-crossref
 without_crossref=
 
-# Do not build pandoc-crossref for static images
-if [ "$stack" = "static" ]; then
+# Do not build pandoc-crossref for static images or arm64 platforms (due to build issues)
+if [ "${stack}" = "static" ] || grep -q "arm64" <<< "$(platforms)"; then
     extra_packages=
     without_crossref=true
 fi
@@ -188,10 +198,6 @@ tag_arguments ()
     done
 }
 
-platforms ()
-{
-    printf 'linux/arm64,linux/amd64'
-}
 
 run_buildx ()
 {
