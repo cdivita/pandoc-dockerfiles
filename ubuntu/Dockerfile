@@ -136,11 +136,7 @@ RUN apt-get -q --no-allow-insecure-repositories update \
         xzdec \
   && rm -rf /var/lib/apt/lists/*
 
-# DANGER: this will vary for different distributions,
-# particularly the `linux` suffix. Ubuntu linux is a glibc based
-# distribution, adjust depending on the distro.
-# `-linux` ----------------------------> vvvvv
-ENV PATH="/opt/texlive/texdir/bin/x86_64-linux:${PATH}"
+ENV PATH="/opt/texlive/texdir/bin/$(uname -p)-$(uname -s | tr '[:upper:]' '[:lower:]'):${PATH}"
 WORKDIR /root
 
 COPY common/latex/texlive.profile /root/texlive.profile

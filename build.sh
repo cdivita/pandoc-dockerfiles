@@ -73,6 +73,7 @@ platforms ()
 {
     if [ "${stack}" = "ubuntu" ]; then
         printf 'linux/amd64,linux/arm64'
+        #printf 'linux/amd64'
     else
         printf 'linux/amd64'
     fi
