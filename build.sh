@@ -72,8 +72,8 @@ done
 platforms ()
 {
     if [ "${stack}" = "ubuntu" ]; then
-        printf 'linux/amd64,linux/arm64'
-        #printf 'linux/amd64'
+        #printf 'linux/amd64,linux/arm64'
+        printf 'linux/amd64'
     else
         printf 'linux/amd64'
     fi
@@ -248,19 +248,6 @@ case "$action" in
         # shellcheck disable=SC2046
 
         run_buildx "build" "$@"
-
-        #docker buildx build --platform $(platforms) "$@" \
-        #    $(tag_arguments) \
-        #    --build-arg pandoc_commit="${pandoc_commit}" \
-        #    --build-arg pandoc_version="${pandoc_version}" \
-        #    --build-arg without_crossref="${without_crossref}" \
-        #    --build-arg extra_packages="${extra_packages}"\
-        #    --build-arg base_image_version="${base_image_version}" \
-        #    --build-arg texlive_version="${texlive_version}" \
-        #    --build-arg lua_version="${lua_version}" \
-        #    --target "${target}"\
-        #    -f "${directory}/${stack}/Dockerfile"\
-        #    "${directory}"
         ;;
     (*)
         printf 'Unknown action: %s\n' "$action"

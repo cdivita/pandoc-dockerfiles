@@ -136,7 +136,15 @@ RUN apt-get -q --no-allow-insecure-repositories update \
         xzdec \
   && rm -rf /var/lib/apt/lists/*
 
-ENV PATH="/opt/texlive/texdir/bin/$(uname -p)-$(uname -s | tr '[:upper:]' '[:lower:]'):${PATH}"
+# TeXLive binaries location
+ARG texlive_bin="/opt/texlive/texdir/bin"
+RUN TEXLIVE_ARCH="$(uname -p)-$(uname -s | tr '[:upper:]' '[:lower:]')" && \
+    mkdir -p ${texlive_bin} && \
+    ln -sf "${texlive_bin}/${TEXLIVE_ARCH}" "${texlive_bin}/default"
+
+# Modify PATH environment variable, prepending TexLive bin directory
+ENV PATH="${texlive_bin}/default:${PATH}"
+
 WORKDIR /root
 
 COPY common/latex/texlive.profile /root/texlive.profile
@@ -145,7 +153,6 @@ COPY common/latex/packages.txt /root/packages.txt
 
 # TeXLive version to install (leave empty to use the latest version).
 ARG texlive_version=
-
 RUN /root/install-texlive.sh $texlive_version \
   && sed -e 's/ *#.*$//' -e '/^ *$/d' /root/packages.txt | \
      xargs tlmgr install \
