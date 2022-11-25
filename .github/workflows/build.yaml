@@ -116,7 +116,7 @@ jobs:
         with:
           # Fixed platforms for current node. If not empty, values take priority over the detected ones
           platforms: linux/amd64,linux/arm64
-      #- uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Show config
         run: make show-args
