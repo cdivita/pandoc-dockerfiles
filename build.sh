@@ -73,7 +73,7 @@ platforms ()
 {
     if [ "${stack}" = "ubuntu" ]; then
         #printf 'linux/amd64,linux/arm64'
-        printf 'linux/amd64'
+        printf 'linux/arm64'
     else
         printf 'linux/amd64'
     fi
@@ -215,9 +215,10 @@ run_buildx ()
         #build_target="${target}-test"
     fi
 
-    `echo docker buildx build "${build_action}" "${extra_args}" \
+    $(echo docker buildx build "${build_action}" "${extra_args}" \
         $(tag_arguments) \
         --platform "$(platforms)" \
+        --progress plain \
         --build-arg pandoc_commit="${pandoc_commit}" \
         --build-arg pandoc_version="${pandoc_version}" \
         --build-arg without_crossref="${without_crossref}" \
@@ -227,7 +228,7 @@ run_buildx ()
         --build-arg lua_version="${lua_version}" \
         --target "${build_target}"\
         -f "${directory}/${stack}/Dockerfile"\
-        "${directory}"`
+        "${directory}")
 }
 
 case "$action" in
